@@ -1,4 +1,4 @@
-# How to install and configure the PayPlug module for OroCommerce 3.1
+# How to install and configure the PayPlug module for OroCommerce 4.1
 
 ## 1 - Module installation
 The installation is exclusively done using the OroCommerce application console.
@@ -19,7 +19,7 @@ sudo rm -rf var/cache/prod
 To complete the installation, execute the following command:
 
 ```sh
-php bin/console oro:platform:update --force --timeout=0 --env=prod
+php bin/console oro:platform:update --force --timeout=0 --skip-translations --skip-download-translations --skip-search-reindexation --env=prod
 ```
 
 Finally, make sure to properly clean the cache:
