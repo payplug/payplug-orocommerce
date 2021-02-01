@@ -140,6 +140,7 @@ class Gateway
     public function createPayment(PaymentTransaction $paymentTransaction, PayplugConfigInterface $config)
     {
         $payplugClient = $this->initPayplugClientAndSetDebugModeForLogger($config);
+        $routerContext = $this->router->getContext();
 
         $this->logger->debug(__METHOD__ . ' BEGIN');
 
@@ -149,7 +150,12 @@ class Gateway
             'shipping' => $this->getAddressValues(AddressType::TYPE_SHIPPING, $paymentTransaction),
             'billing' => $this->getAddressValues(AddressType::TYPE_BILLING, $paymentTransaction),
             'hosted_payment' => $this->getCallbackUrls($paymentTransaction),
-            'notification_url' => $this->getNotificationUrl($paymentTransaction)
+            'notification_url' => $this->getNotificationUrl($paymentTransaction),
+            'metadata' => [
+                'order_id' => $paymentTransaction->getEntityIdentifier(),
+                'customer_id' => $paymentTransaction->getFrontendOwner()->getId(),
+                'website' => sprintf('%s://%s', $routerContext->getScheme(), $routerContext->getHost()),
+            ]
         ];
 
         $this->logger->debug('Payment::create from data ' . $this->logger->anonymizeAndJsonEncodeArray($data));
@@ -179,11 +185,21 @@ class Gateway
 
         $this->logger->debug(__METHOD__ . ' BEGIN');
         $amountToRefund = (int) round($amount * 100);
+        $routerContext = $this->router->getContext();
 
         $refund = null;
 
+        $data = [
+            'amount'   => $amountToRefund,
+            'metadata' => [
+                'order_id' => $paymentTransaction->getEntityIdentifier(),
+                'customer_id' => $paymentTransaction->getFrontendOwner()->getId(),
+                'website' => sprintf('%s://%s', $routerContext->getScheme(), $routerContext->getHost()),
+            ]
+        ];
+
         try {
-            $refund = Refund::create($paymentTransaction->getReference(), ['amount' => $amountToRefund], $payplugClient);
+            $refund = Refund::create($paymentTransaction->getReference(), $data, $payplugClient);
         } catch (PayplugException $exception) {
             $this->logger->debug($exception->getHttpResponse());
             throw new \Exception('Refund action cannot be performed');
