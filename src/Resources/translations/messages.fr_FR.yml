@@ -11,6 +11,7 @@ payplug:
         refund.message: Le paiement a été partiellement ou totalement remboursé.
 
     settings:
+        
         labels.label: 'Libellés'
         short_labels.label: 'Libellés courts'
         transport.label: 'Transport'
