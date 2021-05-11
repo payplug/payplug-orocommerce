@@ -1,0 +1,80 @@
+oro:
+    payment:
+        paymenttransaction:
+            types:
+                refund.label: "Rimborso"
+
+payplug:
+    alert:
+        live.message: "Il pagamento è stato effettuato in modalità <b>LIVE</b>. Il pagamento <b>È</b> effettivo."
+        test.message: "Il pagamento è stato effettuato in modalità <b>TEST</b>. Il pagamento <b>NON È</b> effettivo."
+        refund.message: "Il pagamento è stato parzialmente o totalmente rimborsato."
+
+    settings:
+        labels.label: "Intestazione"
+        short_labels.label: "Breve descrizione"
+        transport.label: "Trasporto"
+        login.label: "E-mail"
+        password.label: "Password"
+        mode.label: "Modalità"
+        debug_mode.label: "Modalità Debug"
+        debug_mode.tooltip: "Abilita o disabilita la modalità DEBUG. I log di sistema registrati saranno più dettagliati."
+        login:
+            button.text: "Login"
+            result:
+                success.message: "Sei connesso al tuo account PayPlug"
+                error.message: "Login non corretto"
+                no_password.message: "Inserisci la tua password"
+        logout:
+            button.text: "Log out"
+            result:
+                success.message: "Non sei più connesso al tuo account PayPlug"
+        my_account.text: "Accedi al tuo account PayPlug"
+        no_account.text: "Non hai un account?"
+        suscribe.text: "Iscriviti"
+
+    channel_type.label: "PayPlug"
+    payment_method_message: "PayPlug"
+
+    order:
+        action:
+            payment_informations.label: "Informazioni su PayPlug"
+            refund.label: "Rimborso"
+            refund.message: "Il rimborso è stato effettuato"
+
+    constraints:
+        payment_refund:
+            min_message: "Valore minimo: {min}"
+            max_message: "Valore massimo: {max}"
+
+    api_response:
+        id.label: "ID PayPlug"
+        is_paid.label: "Pagato"
+        amount.label: "Importo"
+        amount_refunded.label: "Importo rimborsato"
+        paid_at.label: "Pagato il"
+        3ds.label: "3D Secure"
+        mode.label: "Modalità"
+        card:
+            country.label: "Paese"
+            brand.label: "Circuito"
+            last4.label: "Ultime 4 cifre"
+
+    on_return:
+        processing_error.label: "Errore durante l’elaborazione della carta di credito."
+        card_declined.label: "La carta è stata rifiutata."
+        insufficient_funds.label: "Fondi insufficienti per effettuare il pagamento."
+        3ds_declined.label: "Il 3D secure è stato rifiutato."
+        incorrect_number.label: "Il numero della carta non è corretto."
+        fraud_suspected.label: "Pagamento rifiutato in quanto potenzialmente fraudolento."
+        method_unsupported.label: "Metodo di pagamento non supportato (es. e-carte bleue)."
+        card_scheme_mismatch.label: "Il numero della carta non corrisponde al circuito selezionato."
+        card_expiration_date_prior_to_last_installment_date.label: "La scadenza della carta è anteriore alla data dell’ultima rata."
+        aborted.label: "Il pagamento è stato interrotto utilizzando la funzionalità “Interrompi pagamento”."
+        timeout.label: "Il cliente ha abbandonato la pagina del pagamento senza pagare."
+        canceled.label: "Il cliente ha annullato il pagamento e ha abbandonato la pagina."
+
+    frontend:
+        alt:
+            logo_payplug: "Logo PayPlug"
+            logo_schemes_payplug: "Logo carte di credito"
