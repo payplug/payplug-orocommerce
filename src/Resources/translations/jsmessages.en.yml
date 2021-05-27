@@ -3,5 +3,5 @@ synolia:
         payment_method:
             checkout:
                 payplug:
-                    minimum_amount.label: Payments by card are limited to 0.99€ minimum per order
-                    maximum_amount.label: Payments by card are limited to 20 000€ maximum per order
+                    minimum_amount.label: "Credit card payments are limited to a minimum of €0.99 per order"
+                    maximum_amount.label: "Credit card payments are limited to a maximum of €20,000 per order"

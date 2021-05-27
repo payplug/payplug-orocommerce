@@ -1,0 +1,7 @@
+synolia:
+    frontend:
+        payment_method:
+            checkout:
+                payplug:
+                    minimum_amount.label: "L'importo dei pagamenti effettuati con carta di credito non può essere inferiore a 0,99€"
+                    maximum_amount.label: "L'importo dei pagamenti effettuati con carta di credito non può essere superiore a 20.000€"
