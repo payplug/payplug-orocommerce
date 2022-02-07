@@ -29,4 +29,4 @@ jobs:
 #            fields: '{"customfield_10171": "test"}'
 
       - name: Log created JIRA issue
-        run: echo "Issue ${{ JIRA_BASE_URL }} was created"
+        run: echo "Issue ${{ secrets.JIRA_BASE_URL }} was created"
