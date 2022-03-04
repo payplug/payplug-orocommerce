@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Method\Provider;
 
 use Oro\Bundle\PaymentBundle\Method\Provider\AbstractPaymentMethodProvider;
@@ -36,7 +38,7 @@ class PayplugMethodProvider extends AbstractPaymentMethodProvider
     /**
      * {@inheritdoc}
      */
-    protected function collectMethods()
+    protected function collectMethods(): void
     {
         $configs = $this->configProvider->getPaymentConfigs();
         foreach ($configs as $config) {
@@ -47,7 +49,7 @@ class PayplugMethodProvider extends AbstractPaymentMethodProvider
     /**
      * @param PayplugConfigInterface $config
      */
-    protected function addPayplugMethod(PayplugConfigInterface $config)
+    protected function addPayplugMethod(PayplugConfigInterface $config): void
     {
         $this->addMethod(
             $config->getPaymentMethodIdentifier(),

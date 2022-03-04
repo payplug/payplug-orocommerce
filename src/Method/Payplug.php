@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Method;
 
 use Oro\Bundle\PaymentBundle\Context\PaymentContextInterface;
@@ -9,11 +11,15 @@ use Payplug\Bundle\PaymentBundle\Method\Config\PayplugConfigInterface;
 use Payplug\Bundle\PaymentBundle\Service\Gateway;
 use Payplug\Resource\Payment;
 use Payplug\Resource\Refund;
-use Payplug\Resource\Refund as ResourceRefund;
 
 class Payplug implements PaymentMethodInterface
 {
     public const REFUND = 'refund';
+
+    /**
+     * @var float
+     */
+    protected $maximumRefundAmountCache = 0;
 
     /**
      * @var PayplugConfigInterface
@@ -25,17 +31,11 @@ class Payplug implements PaymentMethodInterface
      */
     private $gateway;
 
-    /**
-     * @var float
-     */
-    protected $maximumRefundAmountCache = 0;
-
     public function __construct(PayplugConfigInterface $config, Gateway $gateway)
     {
         $this->config = $config;
         $this->gateway = $gateway;
     }
-
 
     /**
      * {@inheritdoc}
@@ -70,7 +70,7 @@ class Payplug implements PaymentMethodInterface
      */
     public function supports($actionName)
     {
-        return $actionName === self::PURCHASE;
+        return self::PURCHASE === $actionName;
     }
 
     public function isDebugMode(): bool
@@ -110,6 +110,11 @@ class Payplug implements PaymentMethodInterface
         return $this->gateway->treatNotify($this->config);
     }
 
+    public function getRefundList(string $reference): array
+    {
+        return $this->gateway->getRefundList($reference, $this->config);
+    }
+
     protected function purchase(PaymentTransaction $paymentTransaction): array
     {
         $payment = $this->gateway->createPayment($paymentTransaction, $this->config);
@@ -119,10 +124,5 @@ class Payplug implements PaymentMethodInterface
         return [
             'purchaseRedirectUrl' => $payment->hosted_payment->payment_url,
         ];
-    }
-
-    public function getRefundList(string $reference): array
-    {
-        return $this->gateway->getRefundList($reference, $this->config);
     }
 }

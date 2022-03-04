@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Tests\Unit\Method\Config\Provider;
 
 use Doctrine\ORM\EntityManager;
@@ -13,12 +15,15 @@ use Payplug\Bundle\PaymentBundle\Method\Config\PayplugConfig;
 use Payplug\Bundle\PaymentBundle\Method\Config\Provider\PayplugConfigProvider;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ */
 class PayplugConfigProviderTest extends \PHPUnit\Framework\TestCase
 {
     use EntityTrait;
 
     /**
-     * @var Registry|\PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject|Registry
      */
     protected $doctrine;
 
@@ -36,7 +41,7 @@ class PayplugConfigProviderTest extends \PHPUnit\Framework\TestCase
      * @var PayplugConfigProvider
      */
     protected $payplugConfigProvider;
-    
+
     protected function setUp(): void
     {
         $this->type = 'payplug';
@@ -83,12 +88,12 @@ class PayplugConfigProviderTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetPaymentConfigs()
+    public function testGetPaymentConfigs(): void
     {
         $this->assertCount(1, $this->payplugConfigProvider->getPaymentConfigs());
     }
 
-    public function testGetPaymentConfig()
+    public function testGetPaymentConfig(): void
     {
         $this->assertInstanceOf(
             PayplugConfig::class,
@@ -96,7 +101,7 @@ class PayplugConfigProviderTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testHasPaymentConfig()
+    public function testHasPaymentConfig(): void
     {
         $this->assertTrue($this->payplugConfigProvider->hasPaymentConfig('payplug_1'));
     }

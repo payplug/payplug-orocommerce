@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Validator\Constraints;
 
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
@@ -14,7 +16,7 @@ class LocalizedRange extends Range
 
         $options['min'] = $transformer->reverseTransform($options['min']);
         $options['max'] = $transformer->reverseTransform($options['max']);
-        
+
         parent::__construct($options);
     }
 
@@ -22,6 +24,4 @@ class LocalizedRange extends Range
     {
         return RangeValidator::class;
     }
-
-
 }

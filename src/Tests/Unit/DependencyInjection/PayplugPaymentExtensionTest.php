@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Tests\Unit\DependencyInjection;
 
 use Oro\Bundle\TestFrameworkBundle\Test\DependencyInjection\ExtensionTestCase;
 use Payplug\Bundle\PaymentBundle\DependencyInjection\PayplugPaymentExtension;
 
+/**
+ * @internal
+ */
 class PayplugPaymentExtensionTest extends ExtensionTestCase
 {
-    public function testLoad()
+    public function testLoad(): void
     {
         $this->loadExtension(new PayplugPaymentExtension());
 
@@ -28,7 +33,7 @@ class PayplugPaymentExtensionTest extends ExtensionTestCase
         $this->assertDefinitionsLoaded($expectedDefinitions);
 
         $expectedParameters = [
-            'payplug.method.identifier_prefix'
+            'payplug.method.identifier_prefix',
         ];
         $this->assertParametersLoaded($expectedParameters);
     }
