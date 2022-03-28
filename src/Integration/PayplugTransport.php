@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Integration;
 
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
@@ -12,7 +14,7 @@ class PayplugTransport implements TransportInterface
     /**
      * {@inheritdoc}
      */
-    public function init(Transport $transportEntity)
+    public function init(Transport $transportEntity): void
     {
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Migrations\Schema;
 
 use Doctrine\DBAL\Schema\Schema;
@@ -19,14 +21,14 @@ class PayplugPaymentBundleInstaller implements Installation
     /**
      * {@inheritdoc}
      */
-    public function up(Schema $schema, QueryBag $queries)
+    public function up(Schema $schema, QueryBag $queries): void
     {
-        /** Tables generation **/
+        /** Tables generation */
         $this->alterOroIntegrationTransportTable($schema);
         $this->createPayplugShortLabelTable($schema);
         $this->createPayplugTransLabelTable($schema);
 
-        /** Foreign keys generation **/
+        /** Foreign keys generation */
         $this->addPayplugShortLabelForeignKeys($schema);
         $this->addPayplugTransLabelForeignKeys($schema);
     }
@@ -36,7 +38,7 @@ class PayplugPaymentBundleInstaller implements Installation
      *
      * @param Schema $schema
      */
-    protected function alterOroIntegrationTransportTable(Schema $schema)
+    protected function alterOroIntegrationTransportTable(Schema $schema): void
     {
         $table = $schema->getTable('oro_integration_transport');
         $table->addColumn('payplug_login', 'string', ['notnull' => false, 'length' => 255]);
@@ -51,7 +53,7 @@ class PayplugPaymentBundleInstaller implements Installation
      *
      * @param Schema $schema
      */
-    protected function createPayplugShortLabelTable(Schema $schema)
+    protected function createPayplugShortLabelTable(Schema $schema): void
     {
         $table = $schema->createTable('payplug_short_label');
         $table->addColumn('transport_id', 'integer', []);
@@ -66,7 +68,7 @@ class PayplugPaymentBundleInstaller implements Installation
      *
      * @param Schema $schema
      */
-    protected function createPayplugTransLabelTable(Schema $schema)
+    protected function createPayplugTransLabelTable(Schema $schema): void
     {
         $table = $schema->createTable('payplug_trans_label');
         $table->addColumn('transport_id', 'integer', []);
@@ -81,7 +83,7 @@ class PayplugPaymentBundleInstaller implements Installation
      *
      * @param Schema $schema
      */
-    protected function addPayplugShortLabelForeignKeys(Schema $schema)
+    protected function addPayplugShortLabelForeignKeys(Schema $schema): void
     {
         $table = $schema->getTable('payplug_short_label');
         $table->addForeignKeyConstraint(
@@ -103,7 +105,7 @@ class PayplugPaymentBundleInstaller implements Installation
      *
      * @param Schema $schema
      */
-    protected function addPayplugTransLabelForeignKeys(Schema $schema)
+    protected function addPayplugTransLabelForeignKeys(Schema $schema): void
     {
         $table = $schema->getTable('payplug_trans_label');
         $table->addForeignKeyConstraint(

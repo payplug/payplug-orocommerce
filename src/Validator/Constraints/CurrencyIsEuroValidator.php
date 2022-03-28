@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Validator\Constraints;
 
-use Oro\Bundle\InventoryBundle\Model\Inventory;
 use Oro\Bundle\PaymentBundle\Entity\PaymentMethodConfig;
 use Oro\Bundle\PaymentBundle\Entity\PaymentMethodsConfigsRule;
 use Oro\Bundle\PaymentBundle\Method\Provider\PaymentMethodProviderInterface;
@@ -12,7 +13,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class CurrencyIsEuroValidator extends ConstraintValidator
 {
-    const VALID_CURRENCY = 'EUR';
+    public const VALID_CURRENCY = 'EUR';
 
     /**
      * @var PaymentMethodProviderInterface
@@ -23,8 +24,8 @@ class CurrencyIsEuroValidator extends ConstraintValidator
     {
         $this->paymentMethodProvider = $paymentMethodProvider;
     }
-    
-    public function validate($value, Constraint $constraint)
+
+    public function validate($value, Constraint $constraint): void
     {
         if (!($value instanceof PaymentMethodsConfigsRule)) {
             return;
@@ -34,7 +35,7 @@ class CurrencyIsEuroValidator extends ConstraintValidator
         foreach ($value->getMethodConfigs() as $methodConfig) {
             $paymentMethod = $this->paymentMethodProvider->getPaymentMethod($methodConfig->getType());
 
-            if ($paymentMethod instanceof Payplug && $value->getCurrency() !== self::VALID_CURRENCY) {
+            if ($paymentMethod instanceof Payplug && self::VALID_CURRENCY !== $value->getCurrency()) {
                 $this->context->buildViolation($constraint->message)
                     ->atPath('currency')
                     ->addViolation();

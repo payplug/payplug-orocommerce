@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,6 +18,40 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class PayplugSettings extends Transport
 {
+    /**
+     * @var string
+     * @ORM\Column(name="payplug_login", type="string")
+     */
+    protected $login;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="payplug_debug_mode", type="boolean", options={"default"=false})
+     */
+    protected $debugMode = false;
+
+    /**
+     * @var string
+     * @ORM\Column(name="payplug_api_key_test", type="string", nullable=true)
+     */
+    protected $apiKeyTest;
+
+    /**
+     * @var string
+     * @ORM\Column(name="payplug_api_key_live", type="string", nullable=true)
+     */
+    protected $apiKeyLive;
+
+    /**
+     * @var string
+     * @ORM\Column(
+     *     name="payplug_mode",
+     *     type="string",
+     *     nullable=false,
+     *     options={"default" : PayplugSettingsConstant::MODE_TEST}
+     * )
+     */
+    protected $mode = PayplugSettingsConstant::MODE_TEST;
     /**
      * @var Collection|LocalizedFallbackValue[]
      *
@@ -57,41 +93,6 @@ class PayplugSettings extends Transport
      * @Assert\NotBlank
      */
     private $shortLabels;
-
-    /**
-     * @var string
-     * @ORM\Column(name="payplug_login", type="string")
-     */
-    protected $login;
-
-    /**
-     * @var bool
-     * @ORM\Column(name="payplug_debug_mode", type="boolean", options={"default"=false})
-     */
-    protected $debugMode = false;
-
-    /**
-     * @var string
-     * @ORM\Column(name="payplug_api_key_test", type="string", nullable=true)
-     */
-    protected $apiKeyTest;
-
-    /**
-     * @var string
-     * @ORM\Column(name="payplug_api_key_live", type="string", nullable=true)
-     */
-    protected $apiKeyLive;
-
-    /**
-     * @var string
-     * @ORM\Column(
-     *     name="payplug_mode",
-     *     type="string",
-     *     nullable=false,
-     *     options={"default" : PayplugSettingsConstant::MODE_TEST}
-     * )
-     */
-    protected $mode = PayplugSettingsConstant::MODE_TEST;
 
     /**
      * @var ParameterBag
@@ -186,11 +187,13 @@ class PayplugSettings extends Transport
 
     /**
      * @param string|null $login
+     *
      * @return PayplugSettings
      */
     public function setLogin(?string $login): PayplugSettings
     {
         $this->login = $login;
+
         return $this;
     }
 
@@ -204,11 +207,13 @@ class PayplugSettings extends Transport
 
     /**
      * @param bool $debugMode
+     *
      * @return PayplugSettings
      */
     public function setDebugMode(bool $debugMode): PayplugSettings
     {
         $this->debugMode = $debugMode;
+
         return $this;
     }
 
@@ -222,11 +227,13 @@ class PayplugSettings extends Transport
 
     /**
      * @param string|null $apiKeyTest
+     *
      * @return PayplugSettings
      */
     public function setApiKeyTest(?string $apiKeyTest): PayplugSettings
     {
         $this->apiKeyTest = $apiKeyTest;
+
         return $this;
     }
 
@@ -240,11 +247,13 @@ class PayplugSettings extends Transport
 
     /**
      * @param string|null $apiKeyLive
+     *
      * @return PayplugSettings
      */
     public function setApiKeyLive(?string $apiKeyLive): PayplugSettings
     {
         $this->apiKeyLive = $apiKeyLive;
+
         return $this;
     }
 
@@ -258,11 +267,13 @@ class PayplugSettings extends Transport
 
     /**
      * @param string $mode
+     *
      * @return PayplugSettings
      */
     public function setMode(string $mode): PayplugSettings
     {
         $this->mode = $mode;
+
         return $this;
     }
 
