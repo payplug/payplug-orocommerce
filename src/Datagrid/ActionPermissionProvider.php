@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Datagrid;
 
 use Doctrine\ORM\EntityManager;
@@ -34,15 +36,16 @@ class ActionPermissionProvider
 
         $displayInformationsButton = false;
 
-        if ($paymentMethod instanceof Payplug
-            && $paymentMethod->isConnected()
-            && $record->getValue('action') == PaymentMethodInterface::PURCHASE
+        if (
+            $paymentMethod instanceof Payplug &&
+            $paymentMethod->isConnected() &&
+            PaymentMethodInterface::PURCHASE === $record->getValue('action')
         ) {
             $displayInformationsButton = true;
         }
 
         return [
-            'informations' => $displayInformationsButton
+            'informations' => $displayInformationsButton,
         ];
     }
 }

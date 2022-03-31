@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Service;
 
 use Oro\Bundle\AddressBundle\Entity\AbstractAddress;
@@ -28,10 +30,10 @@ use Symfony\Component\Routing\RouterInterface;
 
 class Gateway
 {
-    const FIRST_NAME_LAST_NAME_MAX_LENGTH = 100;
-    const USER_AGENT_PRODUCT_NAME = 'PayPlug-OroCommerce';
-    const USER_AGENT_OROCOMMERCE_VERSION_PREFIX = 'OroCommerce/';
-    const PAYPLUG_MODULE_COMPOSER_NAME = 'payplug/payplug-orocommerce';
+    public const FIRST_NAME_LAST_NAME_MAX_LENGTH = 100;
+    public const USER_AGENT_PRODUCT_NAME = 'PayPlug-OroCommerce';
+    public const USER_AGENT_OROCOMMERCE_VERSION_PREFIX = 'OroCommerce/';
+    public const PAYPLUG_MODULE_COMPOSER_NAME = 'payplug/payplug-orocommerce';
 
     /**
      * @var DoctrineHelper
@@ -39,7 +41,7 @@ class Gateway
     private $doctrineHelper;
 
     /**
-     * @var PropertyAccessor $propertyAccessor
+     * @var PropertyAccessor
      */
     private $propertyAccessor;
 
@@ -72,11 +74,11 @@ class Gateway
         $this->versionHelper = $versionHelper;
     }
 
-
     public function authenticate(string $login, string $password): ?array
     {
         try {
             $response = Authentication::getKeysByLogin($login, $password);
+
             return $response['httpResponse']['secret_keys'];
         } catch (PayplugException $exception) {
             return [];
@@ -157,25 +159,24 @@ class Gateway
                 'order_id' => $paymentTransaction->getEntityIdentifier(),
                 'customer_id' => $paymentTransaction->getFrontendOwner()->getId(),
                 'website' => sprintf('%s://%s', $routerContext->getScheme(), $routerContext->getHost()),
-            ]
+            ],
         ];
 
         $this->logger->debug('Payment::create from data ' . $this->logger->anonymizeAndJsonEncodeArray($data));
 
         try {
             $payment = Payment::create($data, $payplugClient);
+            $this->logger->debug('Payment reference is ' . $payment->id);
+            $this->logger->debug('Payment url is ' . $payment->hosted_payment->payment_url);
         } catch (HttpException $exception) {
             $this->logger->error('PayPlug HttpException catched:' . $exception->getHttpResponse());
         } catch (\Exception $exception) {
             $this->logger->error('PayPlug Exception catched:' . $exception->getMessage());
         }
 
-        $this->logger->debug('Payment reference is ' . $payment->id);
-        $this->logger->debug('Payment url is ' . $payment->hosted_payment->payment_url);
-
         $this->logger->debug(__METHOD__ . ' END');
 
-        return $payment;
+        return $payment ?? null;
     }
 
     public function refundPayment(
@@ -192,12 +193,12 @@ class Gateway
         $refund = null;
 
         $data = [
-            'amount'   => $amountToRefund,
+            'amount' => $amountToRefund,
             'metadata' => [
                 'order_id' => $paymentTransaction->getEntityIdentifier(),
                 'customer_id' => $paymentTransaction->getFrontendOwner()->getId(),
                 'website' => sprintf('%s://%s', $routerContext->getScheme(), $routerContext->getHost()),
-            ]
+            ],
         ];
 
         try {
@@ -211,32 +212,6 @@ class Gateway
         }
 
         return $refund;
-    }
-
-    protected function initPayplugClientAndSetDebugModeForLogger(PayplugConfigInterface $config)
-    {
-        $this->logger->setDebugMode($config->isDebugMode());
-
-        switch ($config->getMode()) {
-            case PayplugSettingsConstant::MODE_LIVE:
-                $this->logger->debug('Payplug is in LIVE mode');
-                $client = Payplug::init(['secretKey' => $config->getApiKeyLive()]);
-                break;
-
-            case PayplugSettingsConstant::MODE_TEST:
-            default:
-                $this->logger->debug('Payplug is in TEST mode');
-                $client =  Payplug::init(['secretKey' => $config->getApiKeyTest()]);
-                break;
-        }
-
-        HttpClient::addDefaultUserAgentProduct(
-            self::USER_AGENT_PRODUCT_NAME,
-            $this->versionHelper->getVersion(self::PAYPLUG_MODULE_COMPOSER_NAME),
-            self::USER_AGENT_OROCOMMERCE_VERSION_PREFIX . $this->versionHelper->getVersion()
-        );
-
-        return $client;
     }
 
     public function getAddressValues(string $type, PaymentTransaction $paymentTransaction): array
@@ -276,25 +251,47 @@ class Gateway
         }
 
         $data = [
-            "email" => $this->propertyAccessor->getValue($entity, 'email'),
-            "first_name" => $this->getNamesValue($address->getFirstName(), $address),
-            "last_name" => $this->getNamesValue($address->getLastName(), $address),
-            "address1" => $address->getStreet(),
-            "address2" => $address->getStreet2(),
-            "city" => $address->getCity(),
-            "postcode" => $address->getPostalCode(),
-            "country" => $address->getCountryIso2(),
+            'email' => $this->propertyAccessor->getValue($entity, 'email'),
+            'first_name' => $this->getNamesValue($address->getFirstName(), $address),
+            'last_name' => $this->getNamesValue($address->getLastName(), $address),
+            'address1' => $address->getStreet(),
+            'address2' => $address->getStreet2(),
+            'city' => $address->getCity(),
+            'postcode' => $address->getPostalCode(),
+            'country' => $address->getCountryIso2(),
         ];
 
-        if ($type == AddressType::TYPE_SHIPPING) {
-            $data["delivery_type"] = "BILLING";
+        if (AddressType::TYPE_SHIPPING === $type) {
+            $data['delivery_type'] = 'BILLING';
         }
 
-        $data = array_map(function($value) {
-            return empty($value) ? null : $value;
-        }, $data);
+        return array_map(fn ($value) => empty($value) ? null : $value, $data);
+    }
 
-        return $data;
+    protected function initPayplugClientAndSetDebugModeForLogger(PayplugConfigInterface $config)
+    {
+        $this->logger->setDebugMode($config->isDebugMode());
+
+        switch ($config->getMode()) {
+            case PayplugSettingsConstant::MODE_LIVE:
+                $this->logger->debug('Payplug is in LIVE mode');
+                $client = Payplug::init(['secretKey' => $config->getApiKeyLive()]);
+                break;
+
+            case PayplugSettingsConstant::MODE_TEST:
+            default:
+                $this->logger->debug('Payplug is in TEST mode');
+                $client = Payplug::init(['secretKey' => $config->getApiKeyTest()]);
+                break;
+        }
+
+        HttpClient::addDefaultUserAgentProduct(
+            self::USER_AGENT_PRODUCT_NAME,
+            $this->versionHelper->getVersion(self::PAYPLUG_MODULE_COMPOSER_NAME),
+            self::USER_AGENT_OROCOMMERCE_VERSION_PREFIX . $this->versionHelper->getVersion()
+        );
+
+        return $client;
     }
 
     protected function getCallbackUrls(PaymentTransaction $paymentTransaction): array
@@ -328,9 +325,9 @@ class Gateway
     private function getNamesValue(?string $value, AbstractAddress $address)
     {
         if (empty($value)) {
-            $value =  $address->getOrganization();
+            $value = $address->getOrganization();
         }
 
-        return substr($value, 0, self::FIRST_NAME_LAST_NAME_MAX_LENGTH);
+        return mb_substr((string) $value, 0, self::FIRST_NAME_LAST_NAME_MAX_LENGTH);
     }
 }

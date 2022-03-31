@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\EventListener\Callback;
 
 use Oro\Bundle\PaymentBundle\Entity\PaymentTransaction;
@@ -11,6 +13,7 @@ use Payplug\Bundle\PaymentBundle\Service\Logger;
 use Payplug\Bundle\PaymentBundle\Service\RefundManager;
 use Payplug\Resource\Payment;
 use Payplug\Resource\Refund;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class PayplugCheckoutListener
@@ -47,7 +50,6 @@ class PayplugCheckoutListener
         $this->logger = $logger;
     }
 
-
     /**
      * @param AbstractCallbackEvent $event
      */
@@ -56,7 +58,8 @@ class PayplugCheckoutListener
         $paymentTransaction = $event->getPaymentTransaction();
 
         if (!$paymentTransaction) {
-            $this->logger->error('No payment transaction fund onError event');
+            $this->logger->error('No payment transaction found onError event');
+
             return;
         }
 
@@ -64,7 +67,8 @@ class PayplugCheckoutListener
         $paymentMethod = $this->paymentMethodProvider->getPaymentMethod($paymentTransaction->getPaymentMethod());
 
         if (!$paymentMethod) {
-            $this->logger->error('No payment method fund onError event');
+            $this->logger->error('No payment method found onError event');
+
             return;
         }
 
@@ -96,7 +100,8 @@ class PayplugCheckoutListener
         $paymentTransaction = $event->getPaymentTransaction();
 
         if (!$paymentTransaction) {
-            $this->logger->error('No payment transaction fund onReturn event');
+            $this->logger->error('No payment transaction found onReturn event');
+
             return;
         }
 
@@ -104,7 +109,9 @@ class PayplugCheckoutListener
         $paymentMethod = $this->paymentMethodProvider->getPaymentMethod($paymentTransaction->getPaymentMethod());
 
         if (!$paymentMethod) {
-            $this->logger->error('No payment method fund onReturn event');
+            $this->logger->error('No payment method found onReturn event');
+            $this->redirectToFailureUrl($paymentTransaction, $event);
+
             return;
         }
 
@@ -115,6 +122,8 @@ class PayplugCheckoutListener
 
         if (!$payplugResponse) {
             $this->logger->error('Payplug API response is empty');
+            $this->redirectToFailureUrl($paymentTransaction, $event);
+
             return;
         }
 
@@ -126,9 +135,15 @@ class PayplugCheckoutListener
                 ->setActive(true);
 
             $this->logger->debug('Payment transaction set to successfull and active');
+
+            $event->markSuccessful();
+
+            $this->logger->debug(__METHOD__ . ' END');
+
+            return;
         }
 
-        $event->markSuccessful();
+        $this->redirectToFailureUrl($paymentTransaction, $event);
 
         $this->logger->debug(__METHOD__ . ' END');
     }
@@ -141,7 +156,8 @@ class PayplugCheckoutListener
         $paymentTransaction = $event->getPaymentTransaction();
 
         if (!$paymentTransaction) {
-            $this->logger->error('No payment transaction fund onNotify event');
+            $this->logger->error('No payment transaction found onNotify event');
+
             return;
         }
 
@@ -149,7 +165,8 @@ class PayplugCheckoutListener
         $paymentMethod = $this->paymentMethodProvider->getPaymentMethod($paymentTransaction->getPaymentMethod());
 
         if (!$paymentMethod) {
-            $this->logger->error('No payment method fund onNotify event');
+            $this->logger->error('No payment method found onNotify event');
+
             return;
         }
 
@@ -160,6 +177,7 @@ class PayplugCheckoutListener
 
         if (!$payplugResponse) {
             $this->logger->error('PayPlug API response is empty');
+
             return;
         }
 
@@ -190,6 +208,20 @@ class PayplugCheckoutListener
         $this->logger->debug(__METHOD__ . ' END');
     }
 
+    private function redirectToFailureUrl(
+        PaymentTransaction $paymentTransaction,
+        AbstractCallbackEvent $event
+    ): void {
+        $event->stopPropagation();
+
+        $transactionOptions = $paymentTransaction->getTransactionOptions();
+        if (!empty($transactionOptions['failureUrl'])) {
+            $event->setResponse(new RedirectResponse($transactionOptions['failureUrl']));
+        } else {
+            $event->markFailed();
+        }
+    }
+
     private function displayPayplugErrorMessage(PaymentTransaction $paymentTransaction): void
     {
         $this->logger->debug(__METHOD__ . ' BEGIN');
@@ -200,16 +232,13 @@ class PayplugCheckoutListener
 
         if (!$payplugResponse) {
             $this->logger->error('PayPlug API response is empty');
+
             return;
         }
 
-        if (in_array(
-            $payplugResponse->failure->code,
-            PayplugFailureConstant::getAll()
-        )) {
+        if (\in_array($payplugResponse->failure->code, PayplugFailureConstant::getAll(), true)) {
             $this->logger->debug('Warning message sent to customer with code: ' . $payplugResponse->failure->code);
-            $this->session->getFlashBag()
-                ->add('warning', 'payplug.on_return.' . $payplugResponse->failure->code .  '.label');
+            $this->session->getFlashBag()->add('warning', 'payplug.on_return.' . $payplugResponse->failure->code . '.label');
         } else {
             $this->logger->debug('Unknown failure code from PayPlug API: ' . $payplugResponse->failure->code);
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Service;
 
 use Doctrine\ORM\EntityManager;
@@ -19,10 +21,10 @@ class RefundManager
         $this->manager = $manager;
     }
 
-    public function createRefundTransaction(PaymentTransaction $paymentTransaction, Refund $payplugRefund)
+    public function createRefundTransaction(PaymentTransaction $paymentTransaction, Refund $payplugRefund): void
     {
         $existingTransaction = $this->manager->getRepository(PaymentTransaction::class)->findOneBy([
-            'reference' =>  $payplugRefund->id
+            'reference' => $payplugRefund->id,
         ]);
 
         if ($existingTransaction) {

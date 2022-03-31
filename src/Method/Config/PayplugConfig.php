@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Method\Config;
 
 use Oro\Bundle\PaymentBundle\Method\Config\ParameterBag\AbstractParameterBagPaymentConfig;
 
 class PayplugConfig extends AbstractParameterBagPaymentConfig implements PayplugConfigInterface
 {
-    const LOGIN = 'login';
-    const API_KEY_TEST = 'api_key_test';
-    const API_KEY_LIVE = 'api_key_live';
-    const DEBUG_MODE = 'debug_mode';
-    const MODE = 'mode';
+    public const LOGIN = 'login';
+    public const API_KEY_TEST = 'api_key_test';
+    public const API_KEY_LIVE = 'api_key_live';
+    public const DEBUG_MODE = 'debug_mode';
+    public const MODE = 'mode';
 
     public function getLogin(): string
     {

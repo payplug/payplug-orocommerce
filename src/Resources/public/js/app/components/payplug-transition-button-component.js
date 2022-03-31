@@ -27,11 +27,9 @@ define(function(require) {
          * @inheritDoc
          */
         dispose: function() {
-            if (this.disposed || !this.disposable) {
+            if (this.disposed) {
                 return;
             }
-
-            this.$el.off();
 
             mediator.off('checkout:payment:before-transit', this.beforeTransit, this);
 

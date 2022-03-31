@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Tests\Unit\Method\Provider;
 
 use Oro\Bundle\PaymentBundle\Tests\Unit\Method\Provider\AbstractMethodProviderTest;
@@ -8,6 +10,9 @@ use Payplug\Bundle\PaymentBundle\Method\Config\Provider\PayplugConfigProviderInt
 use Payplug\Bundle\PaymentBundle\Method\Factory\PayplugPaymentMethodFactoryInterface;
 use Payplug\Bundle\PaymentBundle\Method\Provider\PayplugMethodProvider;
 
+/**
+ * @internal
+ */
 class PayplugMethodProviderTest extends AbstractMethodProviderTest
 {
     protected function setUp(): void

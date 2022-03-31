@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Form\Type;
 
 use Oro\Bundle\LocaleBundle\Form\Type\LocalizedFallbackValueCollectionType;
@@ -25,7 +27,7 @@ class PayplugSettingsType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add(
@@ -33,7 +35,7 @@ class PayplugSettingsType extends AbstractType
                 LocalizedFallbackValueCollectionType::class,
                 [
                     'label' => 'payplug.settings.labels.label',
-                    'required' => true
+                    'required' => true,
                 ]
             )
             ->add(
@@ -41,7 +43,7 @@ class PayplugSettingsType extends AbstractType
                 LocalizedFallbackValueCollectionType::class,
                 [
                     'label' => 'payplug.settings.short_labels.label',
-                    'required' => false
+                    'required' => false,
                 ]
             )
             ->add(
@@ -54,7 +56,7 @@ class PayplugSettingsType extends AbstractType
             )
         ;
 
-        $formModifier = function (FormInterface $form, PayplugSettings $payplugSettings = null) {
+        $formModifier = function (FormInterface $form, PayplugSettings $payplugSettings = null): void {
             $form->add(
                 'login',
                 TextType::class,
@@ -62,17 +64,17 @@ class PayplugSettingsType extends AbstractType
                     'label' => 'payplug.settings.login.label',
                     'required' => true,
                     'constraints' => [new NotBlank()],
-                    'disabled' => $payplugSettings->isConnected() ? true : false
+                    'disabled' => $payplugSettings->isConnected() ? true : false,
                 ]
             );
 
-            if (!$payplugSettings->isConnected() && $payplugSettings->getId() !== null) {
+            if (!$payplugSettings->isConnected() && null !== $payplugSettings->getId()) {
                 $form->add(
                     'password',
                     PasswordType::class,
                     [
                         'label' => 'payplug.settings.password.label',
-                        'mapped' => false
+                        'mapped' => false,
                     ]
                 );
             }
@@ -83,13 +85,13 @@ class PayplugSettingsType extends AbstractType
                     ChoiceType::class,
                     [
                         'label' => 'payplug.settings.mode.label',
-                        'choices'  => [
+                        'choices' => [
                             'Test' => PayplugSettingsConstant::MODE_TEST,
                             'Live' => PayplugSettingsConstant::MODE_LIVE,
                         ],
                         'empty_data' => PayplugSettingsConstant::MODE_TEST,
-                        'choice_attr' => function($choice, $key, $value) use ($payplugSettings) {
-                            return !$payplugSettings->isLiveModeAvailable() && $value == PayplugSettingsConstant::MODE_LIVE ?
+                        'choice_attr' => function ($choice, $key, $value) use ($payplugSettings) {
+                            return !$payplugSettings->isLiveModeAvailable() && PayplugSettingsConstant::MODE_LIVE == $value ?
                                 ['disabled' => 'disabled'] : []
                             ;
                         },
@@ -108,7 +110,7 @@ class PayplugSettingsType extends AbstractType
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) use ($formModifier) {
+            function (FormEvent $event) use ($formModifier): void {
                 $payplugSettings = $event->getData();
 
                 if (!$payplugSettings) {
@@ -123,12 +125,12 @@ class PayplugSettingsType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [
                 'data_class' => PayplugSettings::class,
-                'allow_extra_fields' => true
+                'allow_extra_fields' => true,
             ]
         );
     }

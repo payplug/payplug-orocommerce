@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Tests\Unit\Method\Config\Factory;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,6 +15,9 @@ use Payplug\Bundle\PaymentBundle\Entity\PayplugSettings;
 use Payplug\Bundle\PaymentBundle\Method\Config\Factory\PayplugConfigFactory;
 use Payplug\Bundle\PaymentBundle\Method\Config\PayplugConfig;
 
+/**
+ * @internal
+ */
 class PayplugConfigFactoryTest extends \PHPUnit\Framework\TestCase
 {
     use EntityTrait;
@@ -23,14 +28,14 @@ class PayplugConfigFactoryTest extends \PHPUnit\Framework\TestCase
     protected $localizationHelper;
 
     /**
-     * @var IntegrationIdentifierGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $identifierGenerator;
-
-    /**
      * @var PayplugConfigFactory
      */
     protected $payplugConfigFactory;
+
+    /**
+     * @var IntegrationIdentifierGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $identifierGenerator;
 
     protected function setUp(): void
     {
@@ -42,7 +47,7 @@ class PayplugConfigFactoryTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreateConfig()
+    public function testCreateConfig(): void
     {
         $label = (new LocalizedFallbackValue())->setString('test label');
         $labels = new ArrayCollection();
@@ -66,7 +71,7 @@ class PayplugConfigFactoryTest extends \PHPUnit\Framework\TestCase
             'debugMode' => true,
             'apiKeyTest' => 'some test key',
             'apiKeyLive' => 'some live key',
-            'mode' => PayplugSettingsConstant::MODE_TEST
+            'mode' => PayplugSettingsConstant::MODE_TEST,
         ];
         /** @var PayplugSettings $payplugSettings */
         $payplugSettings = $this->getEntity(PayplugSettings::class, $bag);
@@ -102,7 +107,7 @@ class PayplugConfigFactoryTest extends \PHPUnit\Framework\TestCase
             'debug_mode' => true,
             'api_key_test' => 'some test key',
             'api_key_live' => 'some live key',
-            'mode' => PayplugSettingsConstant::MODE_TEST
+            'mode' => PayplugSettingsConstant::MODE_TEST,
         ];
 
         return new PayplugConfig($params);

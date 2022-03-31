@@ -1,0 +1,52 @@
+grumphp:
+    ascii:
+        failed: ~
+        succeeded: ~
+    tasks:
+        composer:
+            file: "./composer.json"
+            no_check_all: true
+
+        git_blacklist:
+            whitelist_patterns:
+                - /src/
+            keywords:
+                - 'var_dump'
+                - 'console.log'
+                - 'print_r'
+                - 'die('
+            triggered_by: [php, js, twig]
+
+        jsonlint:
+            detect_key_conflicts: true
+
+        phpcsfixer2:
+            config: 'dev/resources/.php-cs-fixer.php'
+            verbose: true
+            diff: true
+            triggered_by: ['php']
+
+        phpcs:
+            standard: "PSR12"
+            warning_severity: 0
+            whitelist_patterns:
+                - /src/
+            triggered_by: [php]
+
+        phpmd:
+            whitelist_patterns:
+                - /src/
+            ruleset:
+                - "./dev/resources/phpmd.xml"
+            exclude:
+                - "./src/Tests/*"
+
+        phpstan:
+            configuration: "./dev/resources/phpstan.neon"
+
+        twigcs:
+            path: './src'
+            severity: ignore
+
+        yamllint:
+            parse_custom_tags: true
