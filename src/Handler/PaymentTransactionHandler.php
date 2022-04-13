@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Handler;
 
-use Oro\Bundle\EntityBundle\ORM\Registry;
 use Oro\Bundle\PaymentBundle\Entity\PaymentTransaction;
 use Oro\Bundle\PaymentBundle\Method\Provider\PaymentMethodProviderInterface;
 use Payplug\Bundle\PaymentBundle\Service\RefundManager;
@@ -27,7 +28,6 @@ class PaymentTransactionHandler
         $this->paymentMethodProvider = $paymentMethodProvider;
         $this->refundManager = $refundManager;
     }
-
 
     public function refund(PaymentTransaction $paymentTransaction, FormInterface $form): bool
     {

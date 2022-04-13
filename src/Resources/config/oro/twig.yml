@@ -1,2 +1,2 @@
 bundles:
-    - PayplugPaymentBundle:Form:fields.html.twig
+    - '@PayplugPayment/Form/fields.html.twig'

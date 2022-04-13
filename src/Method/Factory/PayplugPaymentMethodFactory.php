@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Method\Factory;
 
 use Payplug\Bundle\PaymentBundle\Method\Config\PayplugConfigInterface;
@@ -17,7 +19,6 @@ class PayplugPaymentMethodFactory implements PayplugPaymentMethodFactoryInterfac
     {
         $this->gateway = $gateway;
     }
-
 
     /**
      * {@inheritdoc}

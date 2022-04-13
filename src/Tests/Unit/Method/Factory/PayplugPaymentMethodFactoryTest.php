@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Tests\Unit\Method\Factory;
 
 use Payplug\Bundle\PaymentBundle\Method\Config\PayplugConfigInterface;
@@ -7,6 +9,9 @@ use Payplug\Bundle\PaymentBundle\Method\Factory\PayplugPaymentMethodFactory;
 use Payplug\Bundle\PaymentBundle\Method\Payplug;
 use Payplug\Bundle\PaymentBundle\Service\Gateway;
 
+/**
+ * @internal
+ */
 class PayplugPaymentMethodFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -25,7 +30,7 @@ class PayplugPaymentMethodFactoryTest extends \PHPUnit\Framework\TestCase
         $this->factory = new PayplugPaymentMethodFactory($this->gateway);
     }
 
-    public function testCreate()
+    public function testCreate(): void
     {
         /** @var PayplugConfigInterface $config */
         $config = $this->createMock(PayplugConfigInterface::class);

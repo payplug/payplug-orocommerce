@@ -1,36 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Controller;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Form\Type\ChannelType;
 use Oro\Bundle\SecurityBundle\Annotation\CsrfProtection;
 use Payplug\Bundle\PaymentBundle\Constant\PayplugSettingsConstant;
 use Payplug\Bundle\PaymentBundle\Entity\PayplugSettings;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Payplug\Bundle\PaymentBundle\Service\Gateway;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ConnectionController extends Controller
+class ConnectionController extends AbstractController
 {
     /**
-     * @Route("/login/{channelId}/", name="payplug_login")
+     * @Route("/login/{channelId}/", name="payplug_login", methods={"POST"})
      * @ParamConverter("channel", class="OroIntegrationBundle:Channel", options={"id" = "channelId"})
-     * @Method("POST")
      * @CsrfProtection()
-     *
-     * @param Request      $request
-     * @param Channel|null $channel
-     *
-     * @return JsonResponse
      *
      * @throws \InvalidArgumentException
      */
-    public function loginAction(Request $request, Channel $channel = null): JsonResponse
-    {
+    public function loginAction(
+        Request $request,
+        Channel $channel = null,
+        RouterInterface $router,
+        TranslatorInterface $translator,
+        Gateway $gateway,
+        SessionInterface $session
+    ): JsonResponse {
         $form = $this->createForm(
             ChannelType::class,
             $channel
@@ -43,11 +49,11 @@ class ConnectionController extends Controller
         if (empty($request->get('oro_integration_channel_form')['transport']['password'])) {
             return new JsonResponse([
                 'success' => false,
-                'message' => $this->get('translator')->trans('payplug.settings.login.result.no_password.message')
+                'message' => $translator->trans('payplug.settings.login.result.no_password.message'),
             ]);
         }
 
-        $apiKeys = $this->get('payplug.service.gateway')->authenticate(
+        $apiKeys = $gateway->authenticate(
             $settings->getLogin(),
             $request->get('oro_integration_channel_form')['transport']['password']
         );
@@ -55,33 +61,31 @@ class ConnectionController extends Controller
         if (empty($apiKeys)) {
             return new JsonResponse([
                 'success' => false,
-                'message' => $this->get('translator')->trans('payplug.settings.login.result.error.message')
+                'message' => $translator->trans('payplug.settings.login.result.error.message'),
             ]);
         }
 
-        $this->sendFlashMessage('success', 'payplug.settings.login.result.success.message');
+        $session->getFlashBag()->add(
+            'success',
+            $translator->trans('payplug.settings.login.result.success.message')
+        );
+
         return new JsonResponse([
             'success' => true,
-            'url' => $this->get('router')->generate('oro_integration_index'),
+            'url' => $router->generate('oro_integration_index'),
             'api_key_test' => $apiKeys['test'],
             'api_key_live' => $apiKeys['live'],
         ]);
     }
 
     /**
-     * @Route("/logout/{channelId}/", name="payplug_logout")
+     * @Route("/logout/{channelId}/", name="payplug_logout", methods={"POST"})
      * @ParamConverter("channel", class="OroIntegrationBundle:Channel", options={"id" = "channelId"})
-     * @Method("POST")
      * @CsrfProtection()
-     *
-     * @param Request      $request
-     * @param Channel|null $channel
-     *
-     * @return JsonResponse
      *
      * @throws \InvalidArgumentException
      */
-    public function logoutAction(Request $request, Channel $channel = null): JsonResponse
+    public function logoutAction(Request $request, Channel $channel = null, SessionInterface $session, TranslatorInterface $translator, ManagerRegistry $managerRegistry): JsonResponse
     {
         $form = $this->createForm(
             ChannelType::class,
@@ -95,26 +99,27 @@ class ConnectionController extends Controller
         $settings->setApiKeyLive(null);
         $settings->setApiKeyTest(null);
         $settings->setMode(PayplugSettingsConstant::MODE_TEST);
-        $this->persistAndFlush($settings);
+        $managerRegistry->getManager()->persist($settings);
+        $managerRegistry->getManager()->flush();
+        $session->getFlashBag()->add(
+            'success',
+            $translator->trans('payplug.settings.logout.result.success.message')
+        );
 
-        $this->sendFlashMessage('success', 'payplug.settings.logout.result.success.message');
         return new JsonResponse([
             'success' => true,
             'disconnect' => true,
         ]);
     }
 
-    private function sendFlashMessage(string $type, string $message): void
+    public static function getSubscribedServices(): array
     {
-        $this->get('session')->getFlashBag()->add(
-            $type,
-            $this->get('translator')->trans($message)
+        return array_merge(
+            [
+                TranslatorInterface::class,
+                Gateway::class,
+            ],
+            parent::getSubscribedServices()
         );
-    }
-
-    private function persistAndFlush($entity): void
-    {
-        $this->getDoctrine()->getManager()->persist($entity);
-        $this->getDoctrine()->getManager()->flush();
     }
 }

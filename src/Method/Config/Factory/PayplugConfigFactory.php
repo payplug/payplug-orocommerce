@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Method\Config\Factory;
 
 use Doctrine\Common\Collections\Collection;
@@ -62,6 +64,6 @@ class PayplugConfigFactory implements PayplugConfigFactoryInterface
      */
     private function getLocalizedValue(Collection $values)
     {
-        return (string)$this->localizationHelper->getLocalizedValue($values);
+        return (string) $this->localizationHelper->getLocalizedValue($values);
     }
 }

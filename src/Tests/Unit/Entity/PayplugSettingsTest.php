@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\LocaleBundle\Entity\LocalizedFallbackValue;
@@ -9,12 +11,15 @@ use Payplug\Bundle\PaymentBundle\Constant\PayplugSettingsConstant;
 use Payplug\Bundle\PaymentBundle\Entity\PayplugSettings;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+/**
+ * @internal
+ */
 class PayplugSettingsTest extends \PHPUnit\Framework\TestCase
 {
     use EntityTestCaseTrait;
     use EntityTrait;
 
-    public function testAccessors()
+    public function testAccessors(): void
     {
         static::assertPropertyAccessors(new PayplugSettings(), [
             ['login', 'some login'],
@@ -30,7 +35,7 @@ class PayplugSettingsTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testGetSettingsBag()
+    public function testGetSettingsBag(): void
     {
         /** @var PayplugSettings $entity */
         $entity = $this->getEntity(
@@ -50,7 +55,7 @@ class PayplugSettingsTest extends \PHPUnit\Framework\TestCase
         $result = $entity->getSettingsBag();
 
         static::assertEquals('some login', $result->get('login'));
-        static::assertEquals(false, $result->get('debugMode'));
+        static::assertFalse($result->get('debugMode'));
         static::assertEquals('some test key', $result->get('apiKeyTest'));
         static::assertEquals('some live key', $result->get('apiKeyLive'));
         static::assertEquals(PayplugSettingsConstant::MODE_TEST, $result->get('mode'));
