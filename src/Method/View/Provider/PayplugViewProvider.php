@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Method\View\Provider;
 
 use Oro\Bundle\PaymentBundle\Method\View\AbstractPaymentMethodViewProvider;
@@ -32,7 +34,7 @@ class PayplugViewProvider extends AbstractPaymentMethodViewProvider
     /**
      * {@inheritdoc}
      */
-    protected function buildViews()
+    protected function buildViews(): void
     {
         $configs = $this->configProvider->getPaymentConfigs();
         foreach ($configs as $config) {
@@ -43,7 +45,7 @@ class PayplugViewProvider extends AbstractPaymentMethodViewProvider
     /**
      * @param PayplugConfigInterface $config
      */
-    protected function addPayplugView(PayplugConfigInterface $config)
+    protected function addPayplugView(PayplugConfigInterface $config): void
     {
         $this->addView(
             $config->getPaymentMethodIdentifier(),

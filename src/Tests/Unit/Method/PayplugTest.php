@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Tests\Unit\Method;
 
 use Oro\Bundle\PaymentBundle\Context\PaymentContextInterface;
-use Oro\Bundle\PaymentBundle\Entity\PaymentTransaction;
-use Payplug\Bundle\PaymentBundle\Method\Config\PayplugConfig;
 use Payplug\Bundle\PaymentBundle\Method\Config\PayplugConfigInterface;
 use Payplug\Bundle\PaymentBundle\Method\Payplug;
 use Payplug\Bundle\PaymentBundle\Service\Gateway;
 
+/**
+ * @internal
+ */
 class PayplugTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -34,7 +37,7 @@ class PayplugTest extends \PHPUnit\Framework\TestCase
         $this->method = new Payplug($this->config, $this->gateway);
     }
 
-    public function testGetIdentifier()
+    public function testGetIdentifier(): void
     {
         $identifier = 'id';
 
@@ -45,12 +48,12 @@ class PayplugTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($identifier, $this->method->getIdentifier());
     }
 
-    public function testSupports()
+    public function testSupports(): void
     {
         $this->assertTrue($this->method->supports(Payplug::PURCHASE));
     }
 
-    public function testIsApplicable()
+    public function testIsApplicable(): void
     {
         /** @var PaymentContextInterface|\PHPUnit_Framework_MockObject_MockObject $context */
         $context = $this->createMock(PaymentContextInterface::class);
@@ -61,7 +64,7 @@ class PayplugTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->method->isApplicable($context));
     }
 
-    public function testIsDebugMode()
+    public function testIsDebugMode(): void
     {
         $this->assertFalse($this->method->isDebugMode());
 
@@ -70,7 +73,7 @@ class PayplugTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->method->isDebugMode());
     }
 
-    public function testIsConnected()
+    public function testIsConnected(): void
     {
         $this->assertFalse($this->method->isConnected());
 

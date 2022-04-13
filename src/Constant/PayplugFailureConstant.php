@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Constant;
 
 class PayplugFailureConstant
 {
-    const PROCESSING_ERROR = 'processing_error';
-    const CARD_DECLINED = 'card_declined';
-    const INSUFFICIENT_FUNDS = 'insufficient_funds';
-    const IS_3DS_DECLINED = '3ds_declined';
-    const INCORRECT_NUMBER = 'incorrect_number';
-    const FRAUD_SUSPECTED = 'fraud_suspected';
-    const METHOD_UNSUPPORTED = 'method_unsupported';
-    const CARD_SCHEME_MISMATCH = 'card_scheme_mismatch';
-    const CARD_EXPIRATION = 'card_expiration_date_prior_to_last_installment_date';
-    const ABORTED = 'aborted';
-    const TIMEOUT = 'timeout';
+    public const PROCESSING_ERROR = 'processing_error';
+    public const CARD_DECLINED = 'card_declined';
+    public const INSUFFICIENT_FUNDS = 'insufficient_funds';
+    public const IS_3DS_DECLINED = '3ds_declined';
+    public const INCORRECT_NUMBER = 'incorrect_number';
+    public const FRAUD_SUSPECTED = 'fraud_suspected';
+    public const METHOD_UNSUPPORTED = 'method_unsupported';
+    public const CARD_SCHEME_MISMATCH = 'card_scheme_mismatch';
+    public const CARD_EXPIRATION = 'card_expiration_date_prior_to_last_installment_date';
+    public const ABORTED = 'aborted';
+    public const TIMEOUT = 'timeout';
 
     public static function getAll(): array
     {
@@ -29,7 +31,7 @@ class PayplugFailureConstant
             self::CARD_SCHEME_MISMATCH,
             self::CARD_EXPIRATION,
             self::ABORTED,
-            self::TIMEOUT
+            self::TIMEOUT,
         ];
     }
 }

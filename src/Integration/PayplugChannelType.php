@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Integration;
 
 use Oro\Bundle\IntegrationBundle\Provider\ChannelInterface;
@@ -7,7 +9,7 @@ use Oro\Bundle\IntegrationBundle\Provider\IconAwareIntegrationInterface;
 
 class PayplugChannelType implements ChannelInterface, IconAwareIntegrationInterface
 {
-    const TYPE = 'payplug';
+    public const TYPE = 'payplug';
 
     /**
      * {@inheritdoc}

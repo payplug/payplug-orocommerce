@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Method\Config\Factory;
 
 use Payplug\Bundle\PaymentBundle\Entity\PayplugSettings;
@@ -9,6 +11,7 @@ interface PayplugConfigFactoryInterface
 {
     /**
      * @param PayplugSettings $settings
+     *
      * @return PayplugConfigInterface
      */
     public function create(PayplugSettings $settings);

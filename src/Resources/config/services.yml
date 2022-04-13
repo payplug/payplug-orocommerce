@@ -14,11 +14,17 @@ services:
         tags:
             - { name: oro_integration.channel, type: payplug }
 
+    Payplug\Bundle\PaymentBundle\Integration\PayplugChannelType:
+        alias: payplug.integration.channel
+
     payplug.integration.transport:
         class: Payplug\Bundle\PaymentBundle\Integration\PayplugTransport
         public: false
         tags:
             - { name: oro_integration.transport, type: payplug, channel_type: payplug }
+
+    Payplug\Bundle\PaymentBundle\Integration\PayplugTransport:
+        alias: payplug.integration.transport
 
     payplug.factory.payplug_config:
         class: Payplug\Bundle\PaymentBundle\Method\Config\Factory\PayplugConfigFactory
@@ -27,6 +33,9 @@ services:
             - '@oro_locale.helper.localization'
             - '@payplug.generator.payplug_config_identifier'
 
+    Payplug\Bundle\PaymentBundle\Method\Config\Factory\PayplugConfigFactory:
+        alias: payplug.factory.payplug_config
+
     payplug.payment_method.config.provider:
         class: Payplug\Bundle\PaymentBundle\Method\Config\Provider\PayplugConfigProvider
         arguments:
@@ -34,11 +43,17 @@ services:
             - '@logger'
             - '@payplug.factory.payplug_config'
 
+    Payplug\Bundle\PaymentBundle\Method\Config\Provider\PayplugConfigProvider:
+        alias: payplug.payment_method.config.provider
+
     payplug.factory.method_view.payplug:
         class: Payplug\Bundle\PaymentBundle\Method\View\Factory\PayplugViewFactory
         public: false
         arguments:
             - '@payplug.factory.payplug_config'
+
+    Payplug\Bundle\PaymentBundle\Method\View\Factory\PayplugViewFactory:
+        alias: payplug.factory.method_view.payplug
 
     payplug.payment_method_view_provider.payplug:
         class: Payplug\Bundle\PaymentBundle\Method\View\Provider\PayplugViewProvider
@@ -48,6 +63,9 @@ services:
             - '@payplug.factory.method_view.payplug'
         tags:
             - { name: oro_payment.payment_method_view_provider }
+
+    Payplug\Bundle\PaymentBundle\Method\View\Provider\PayplugViewProvider:
+        alias: payplug.payment_method_view_provider.payplug
 
     payplug.service.gateway:
         class: Payplug\Bundle\PaymentBundle\Service\Gateway
@@ -59,11 +77,17 @@ services:
             - '@payplug.service.logger'
             - '@oro_platform.composer.version_helper'
 
+    Payplug\Bundle\PaymentBundle\Service\Gateway:
+        alias: payplug.service.gateway
+
     payplug.factory.method.payplug:
         class: Payplug\Bundle\PaymentBundle\Method\Factory\PayplugPaymentMethodFactory
         public: false
         arguments:
             - '@payplug.service.gateway'
+
+    Payplug\Bundle\PaymentBundle\Method\Factory\PayplugPaymentMethodFactory:
+        alias: payplug.factory.method.payplug
 
     payplug.payment_method_provider.payplug:
         class: Payplug\Bundle\PaymentBundle\Method\Provider\PayplugMethodProvider
@@ -74,12 +98,18 @@ services:
         tags:
             - { name: oro_payment.payment_method_provider }
 
+    Payplug\Bundle\PaymentBundle\Method\Provider\PayplugMethodProvider:
+        alias: payplug.payment_method_provider.payplug
+
     payplug.datagrid.order_payment_transactions.action_permission_provider:
         class: Payplug\Bundle\PaymentBundle\Datagrid\ActionPermissionProvider
         public: true
         arguments:
             - '@payplug.payment_method_provider.payplug'
             - '@doctrine.orm.entity_manager'
+
+    Payplug\Bundle\PaymentBundle\Datagrid\ActionPermissionProvider:
+        alias: payplug.datagrid.order_payment_transactions.action_permission_provider
 
     payplug.service.logger:
         class: Payplug\Bundle\PaymentBundle\Service\Logger
@@ -88,8 +118,14 @@ services:
         calls:
             - [setLogger, ['@logger']]
 
+    Payplug\Bundle\PaymentBundle\Service\Logger:
+        alias: payplug.service.logger
+
     payplug.service.anonymizer:
         class: Payplug\Bundle\PaymentBundle\Service\Anonymizer
+
+    Payplug\Bundle\PaymentBundle\Service\Anonymizer:
+        alias: payplug.service.anonymizer
 
     payplug.handler.payment_transaction:
         class: Payplug\Bundle\PaymentBundle\Handler\PaymentTransactionHandler
@@ -98,10 +134,16 @@ services:
             - '@payplug.payment_method_provider.payplug'
             - "@payplug.service.refund_manager"
 
+    Payplug\Bundle\PaymentBundle\Handler\PaymentTransactionHandler:
+        alias: payplug.handler.payment_transaction
+
     payplug.service.refund_manager:
         class: Payplug\Bundle\PaymentBundle\Service\RefundManager
         arguments:
             - '@doctrine.orm.entity_manager'
+
+    Payplug\Bundle\PaymentBundle\Service\RefundManager:
+        alias: payplug.service.refund_manager
 
     payplug.validator.payment_rule.currency_is_euro:
         class: Payplug\Bundle\PaymentBundle\Validator\Constraints\CurrencyIsEuroValidator
@@ -109,6 +151,9 @@ services:
             - '@payplug.payment_method_provider.payplug'
         tags:
             - { name: validator.constraint_validator, alias: payplug.validator.payment_rule.currency_is_euro }
+
+    Payplug\Bundle\PaymentBundle\Validator\Constraints\CurrencyIsEuroValidator:
+        alias: payplug.validator.payment_rule.currency_is_euro
 
     payplug.formatter.money_value_type:
         alias: oro_currency.formatter.money_value_type

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Service;
 
 use Psr\Log\LoggerAwareTrait;
@@ -41,6 +43,7 @@ class Logger
     public function anonymizeAndJsonEncodeArray(array $data): ?string
     {
         $this->anonymizer->anonymizeArray($data);
+
         return json_encode($data);
     }
 }

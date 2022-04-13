@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Payplug\Bundle\PaymentBundle\Method\Config\Provider;
 
 use Payplug\Bundle\PaymentBundle\Method\Config\PayplugConfigInterface;
@@ -16,12 +18,14 @@ interface PayplugConfigProviderInterface
 
     /**
      * @param string $identifier
+     *
      * @return PayplugConfigInterface|null
      */
     public function getPaymentConfig($identifier);
 
     /**
      * @param string $identifier
+     *
      * @return bool
      */
     public function hasPaymentConfig($identifier);

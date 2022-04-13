@@ -1,0 +1,19 @@
+services:
+    _defaults:
+        public: true
+
+    Payplug\Bundle\PaymentBundle\Controller\ConnectionController:
+        calls:
+            - [setContainer, ['@Psr\Container\ContainerInterface']]
+        tags:
+            - { name: container.service_subscriber }
+            - { name: container.service_subscriber, id: Payplug\Bundle\PaymentBundle\Service\Gateway }
+            - { name: controller.service_arguments }
+
+    Payplug\Bundle\PaymentBundle\Controller\PaymentTransactionController:
+        calls:
+            - [setContainer, ['@Psr\Container\ContainerInterface']]
+        tags:
+            - { name: container.service_subscriber }
+            - { name: container.service_subscriber, id: Payplug\Bundle\PaymentBundle\Method\Provider\PayplugMethodProvider }
+            - { name: controller.service_arguments }
