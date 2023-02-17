@@ -176,7 +176,7 @@ class PayplugCheckoutListener
         $payplugResponse = $paymentMethod->treatNotify();
 
         if (!$payplugResponse) {
-            $this->logger->error('PayPlug API response is empty');
+            $this->logger->error('Payplug API response is empty');
 
             return;
         }
@@ -184,7 +184,7 @@ class PayplugCheckoutListener
         switch (true) {
             case $payplugResponse instanceof Payment:
                 if (true === $payplugResponse->is_paid) {
-                    $this->logger->debug('"is_paid" value from PayPlug API is TRUE');
+                    $this->logger->debug('"is_paid" value from Payplug API is TRUE');
 
                     $paymentTransaction
                         ->setSuccessful(true)
@@ -200,7 +200,7 @@ class PayplugCheckoutListener
                 break;
 
             default:
-                throw new \Exception('Unrecognized PayPlug response type');
+                throw new \Exception('Unrecognized Payplug response type');
         }
 
         $event->markSuccessful();
@@ -231,7 +231,7 @@ class PayplugCheckoutListener
         $payplugResponse = $paymentMethod->getTransactionInfos($paymentTransaction);
 
         if (!$payplugResponse) {
-            $this->logger->error('PayPlug API response is empty');
+            $this->logger->error('Payplug API response is empty');
 
             return;
         }
@@ -240,7 +240,7 @@ class PayplugCheckoutListener
             $this->logger->debug('Warning message sent to customer with code: ' . $payplugResponse->failure->code);
             $this->session->getFlashBag()->add('warning', 'payplug.on_return.' . $payplugResponse->failure->code . '.label');
         } else {
-            $this->logger->debug('Unknown failure code from PayPlug API: ' . $payplugResponse->failure->code);
+            $this->logger->debug('Unknown failure code from Payplug API: ' . $payplugResponse->failure->code);
         }
 
         $this->logger->debug(__METHOD__ . ' END');

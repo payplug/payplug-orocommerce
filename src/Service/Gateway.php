@@ -169,9 +169,9 @@ class Gateway
             $this->logger->debug('Payment reference is ' . $payment->id);
             $this->logger->debug('Payment url is ' . $payment->hosted_payment->payment_url);
         } catch (HttpException $exception) {
-            $this->logger->error('PayPlug HttpException catched:' . $exception->getHttpResponse());
+            $this->logger->error('Payplug HttpException catched:' . $exception->getHttpResponse());
         } catch (\Exception $exception) {
-            $this->logger->error('PayPlug Exception catched:' . $exception->getMessage());
+            $this->logger->error('Payplug Exception catched:' . $exception->getMessage());
         }
 
         $this->logger->debug(__METHOD__ . ' END');

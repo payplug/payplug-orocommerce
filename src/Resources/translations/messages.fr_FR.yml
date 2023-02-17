@@ -22,23 +22,23 @@ payplug:
         login:
             button.text: "Me connecter"
             result:
-                success.message: "Vous êtes maintenant connecté à votre compte PayPlug"
+                success.message: "Vous êtes maintenant connecté à votre compte Payplug"
                 error.message: "Identifiants de connexion incorrects"
                 no_password.message: "Veuillez renseigner votre mot de passe"
         logout:
             button.text: "Me déconnecter"
             result:
-                success.message: "Vous êtes maintenant déconnecté de votre compte PayPlug"
-        my_account.text: "Accéder à mon compte PayPlug"
+                success.message: "Vous êtes maintenant déconnecté de votre compte Payplug"
+        my_account.text: "Accéder à mon compte Payplug"
         no_account.text: "Vous n'avez pas de compte ?"
         suscribe.text: "Inscrivez-vous"
 
-    channel_type.label: "PayPlug"
-    payment_method_message: "PayPlug"
+    channel_type.label: "Payplug"
+    payment_method_message: "Payplug"
 
     order:
         action:
-            payment_informations.label: "Informations PayPlug"
+            payment_informations.label: "Informations Payplug"
             refund.label: "Remboursement"
             refund.message: "Le remboursement a bien été effectué"
 
@@ -48,7 +48,7 @@ payplug:
             max_message: "Valeur maximum: {max}"
 
     api_response:
-        id.label: "ID PayPlug"
+        id.label: "ID Payplug"
         is_paid.label: "Est payé"
         amount.label: "Montant"
         amount_refunded.label: "Motant remboursé"
@@ -76,5 +76,5 @@ payplug:
 
     frontend:
         alt:
-            logo_payplug: "Logo PayPlug"
+            logo_payplug: "Logo Payplug"
             logo_schemes_payplug: "Logo des cartes de crédit"
