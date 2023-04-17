@@ -1,4 +1,4 @@
-# How to install and configure the PayPlug module for OroCommerce 5.0
+# How to install and configure the PayPlug module for OroCommerce 5.1
 
 ## 1 - Module installation
 The installation is exclusively done using the OroCommerce application console.
