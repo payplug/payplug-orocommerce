@@ -1,0 +1,4 @@
+layout:
+    actions:
+        - '@setBlockTheme':
+            themes: '@PayplugPayment/layouts/default/imports/oro_payment_method_options/layout.html.twig'
